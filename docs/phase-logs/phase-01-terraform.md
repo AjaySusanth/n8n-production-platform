@@ -27,7 +27,12 @@
 - **Subnet id tells K8s in which subnet the nodes should be placed**
 
 ### Module: acr
-- 
+- *Created the vars file with acr name, rg-name and loc and the sku*
+
+- *Defined the resource in main.tf with admin_enabled = false. **It disables the admin user controls, allowing to enforce least privelege usig Azure RBAC, explicitly define exact permissions that are required like AcrPush and AcrPull***
+
+- *Outputs: acr_id => used to assign AcrPull role to AKS,
+            login_server => used for acr login in CI/CD pipeline*
 
 ### Module: keyvault
 - 
