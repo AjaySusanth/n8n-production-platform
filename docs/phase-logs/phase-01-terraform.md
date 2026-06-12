@@ -20,7 +20,11 @@
 > Fill this in as you write each module. Note decisions you made and why.
 
 ### Module: networking
-- 
+- *Created the variables.tf file with rg-name, location, vnet and subnet name and their address spaces. Also created files for main.tf and outputs.tf. => feat(terraform): scaffold networking module*
+
+- *Created a vnet and subnet in the main.tf and defined subnet id as the output*
+
+- **Subnet id tells K8s in which subnet the nodes should be placed**
 
 ### Module: acr
 - 
