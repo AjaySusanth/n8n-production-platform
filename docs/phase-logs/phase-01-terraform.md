@@ -35,7 +35,14 @@
             login_server => used for acr login in CI/CD pipeline*
 
 ### Module: keyvault
-- 
+- *purge_protection_enabled = false (in development, this allows us to delete/re-create Key Vaults easily without waiting for Azure's 90-day retention lock)*
+
+- *resource "azurerm_key_vault_access_policy" "terraform": Grants full access for terraform to manage the secrets*
+
+- *resource "azurerm_key_vault_access_policy" "readers": Loops through the list of reader's id to provide read access to the secrest eg: Aks cluster*
+
+- *vault_uri is used by the secret store csi to fetch the secrets*
+
 
 ### Module: aks
 - 
