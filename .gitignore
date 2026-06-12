@@ -1,0 +1,25 @@
+# Local IAC/Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+*.tfplan
+tfplan
+
+# Local variables (may contain secrets)
+*.tfvars
+*.tfvars.json
+
+# Developer overrides/logs
+*.log
+crash.log
+
+# Helm artifacts
+charts/
+*.tgz
+
+# OS / Editor files
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
