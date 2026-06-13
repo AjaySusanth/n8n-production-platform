@@ -58,7 +58,9 @@ module "keyvault" {
   location = azurerm_resource_group.rg.location
   sku_name = var.kv_sku
   tenant_id = data.azurerm_client_config.current.tenant_id
-  reader_object_ids = [module.aks.kubelet_identity_object_id]
+  reader_object_ids = {
+    aks = module.aks.kubelet_identity_object_id
+  }
 }
 
 resource "azurerm_role_assignment" "acr_pull" {

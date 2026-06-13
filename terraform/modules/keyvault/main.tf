@@ -21,6 +21,6 @@ resource "azurerm_key_vault_access_policy" "readers" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id = var.tenant_id
   secret_permissions =  ["Get", "List"]
-  for_each = toset(var.reader_object_ids)
+  for_each = var.reader_object_ids
   object_id = each.value
 }

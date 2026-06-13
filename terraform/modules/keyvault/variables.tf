@@ -24,7 +24,7 @@ variable "tenant_id" {
 }
 
 variable "reader_object_ids" {
-  type  = list(string)
-  description = "List of Azure AD Object IDs that need to read secrets"
-  default = [] 
+  type  = map(string)
+  description = "Map of Azure AD Object IDs that need to read secrets"
+  default = {}
 }
