@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "n8n.fullname" .}}-postgres
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+
+spec:
+  serviceName: {{ include "n8n.fullname" .}}-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "n8n.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        {{- include "n8n.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: POSTGRES_DB
+              value: "n8n"
+            - name: POSTGRES_USER
+              value: "n8n"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "n8n.fullname" .}}-db-secrets
+                  key: postgres-password
+
+          ports:
+            - name: postgres
+              containerPort: 5432
+            
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - n8n
+                - -d
+                - n8n
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - n8n
+                - -d
+                - n8n
+            initialDelaySeconds: 35
+            periodSeconds: 5
+
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: secrets-store-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
+    volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ include "n8n.fullname" .}}-secrets
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}          
