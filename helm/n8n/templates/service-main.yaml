@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "n8n.main.fullname" .}}
+  labels:
+    {{- include "n8n.labels" . | nindent 4}}
+    app.kubernetes.io/component: main
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5678
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "n8n.main.selectorLabels" . | nindent 4 }}
+
+  
