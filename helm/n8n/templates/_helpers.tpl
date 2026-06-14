@@ -1,14 +1,14 @@
 {{- define "n8n.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix '-' }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "n8n.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix '-' }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- $name:= default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63| trimSuffix '-' }}
+{{- .Release.Name | trunc 63| trimSuffix "-" }}
 {{- else }}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -17,7 +17,7 @@
 
 
 {{- define "n8n.main.fullname" -}}
-{{- printf "%s-main" (include "n8n.fullname" .) | trunc 63 | trimSuffix '-' }}
+{{- printf "%s-main" (include "n8n.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end}}
 
 {{- define "n8n.worker.fullname" -}}
