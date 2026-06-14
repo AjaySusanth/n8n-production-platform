@@ -1,0 +1,122 @@
+# 1. Default Deny All Ingress and Egress
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" . }}-default-deny
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# 2. Allow CoreDNS Egress (Always required for name resolution)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" . }}-allow-dns
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector: {} # Allows connecting to CoreDNS in kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+# 3. Allow Database Ingress (Postgres & Redis only accept from n8n components)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" . }}-allow-db-ingress
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values: [postgres, redis]
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values: [main, webhook, worker]
+      ports:
+        - port: 5432
+          protocol: TCP
+        - port: 6379
+          protocol: TCP
+---
+# 4. Allow n8n Egress to Databases & Internet
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" . }}-allow-n8n-egress
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values: [main, webhook, worker]
+  policyTypes:
+    - Egress
+  egress:
+    # Egress to Databases (Postgres / Redis)
+    - to:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values: [postgres, redis]
+      ports:
+        - port: 5432
+          protocol: TCP
+        - port: 6379
+          protocol: TCP
+    # Egress to the Internet (HTTPS for APIs), blocking internal networks
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+      ports:
+        - port: 443
+          protocol: TCP
+---
+# 5. Allow Ingress Traffic to Web UI & Webhooks
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" . }}-allow-http-ingress
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values: [main, webhook]
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {} # Allow ingress from Ingress Controllers in other namespaces
+      ports:
+        - port: 5678
+          protocol: TCP
