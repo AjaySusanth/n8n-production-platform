@@ -99,8 +99,8 @@ These rules apply to every file in this project. Never violate them:
 
 Track progress here as each phase completes:
 
-- [ ] Phase 1: Terraform — AKS + supporting infra
-- [ ] Phase 2: Helm chart — write from scratch, deploy manually first
+- [x] Phase 1: Terraform — AKS + supporting infra
+- [x] Phase 2: Helm chart — write from scratch, deploy manually first
 - [ ] Phase 3: CI/CD — GitHub Actions + OIDC + ArgoCD
 - [ ] Phase 4: Observability — Prometheus, Grafana, AlertManager, KEDA
 - [ ] Phase 5: Security — Key Vault CSI, NetworkPolicies, OPA Gatekeeper

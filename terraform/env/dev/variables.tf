@@ -75,3 +75,9 @@ variable "kv_sku" {
   description = "Tier of AKV"
   default = "standard"
 }
+
+variable "github_repository" {
+  type = string
+  description = "The Github username and repo name"
+  default     = "AjaySusanth/n8n-production-platform"
+}
