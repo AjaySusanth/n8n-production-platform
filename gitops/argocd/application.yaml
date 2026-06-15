@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n-dev
+  namespace: argocd
+spec: 
+  project: n8n-project
+  source:
+    repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
+    targetRevision: HEAD
+    path: helm/n8n
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true # create dev namespace if not exist

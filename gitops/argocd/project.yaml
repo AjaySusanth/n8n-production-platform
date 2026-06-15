@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: n8n-project
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  description: "n8n Workflow Automation Platform Project"
+  destinations:
+    - namespace: dev
+      server: https://kubernetes.default.svc
+  
+  sourceRepos:
+    - 'https://github.com/AjaySusanth/n8n-production-platform.git'
+  clusterResourceWhitelist: 
+    - group: '*'
+      kind: '*'
