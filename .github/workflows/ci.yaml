@@ -1,0 +1,56 @@
+name: Helm Chart CI
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm/n8n/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'helm/n8n/**'
+
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ACR_NAME: "n8ndevacrajay789"
+
+jobs:
+  lint-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.12.0'
+
+      - name: Helm Lint
+        run: |
+          helm lint ./helm/n8n
+      
+      - name: Azure OIDC Login
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR Login
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+      
+      - name: Package and Push Helm Chart
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          helm package ./helm/n8n --destination .
+          CHART_PACKAGE=$(ls n8n-*.tgz)
+          helm push "$CHART_PACKAGE" oci://${{ env.ACR_NAME }}.azurecr.io/helm
