@@ -43,6 +43,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "n8n.fullname" .}}-db-secrets
                   key: postgres-password
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
 
           ports:
             - name: postgres
@@ -76,7 +78,6 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
-              subPath: pgdata
             - name: secrets-store-inline
               mountPath: /mnt/secrets-store
               readOnly: true
