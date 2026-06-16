@@ -68,6 +68,46 @@ spec:
             - name: secrets-store-inline
               mountPath: /mnt/secrets-store
               readOnly: true
+      
+        - name: redis-exporter
+          image: "oliver006/redis_exporter:v1.58.0"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "n8n.fullname" . }}-db-secrets
+                  key: redis-password
+          ports:
+            - name: metrics
+              containerPort: 9121
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 5
       volumes:
         - name: secrets-store-inline
           csi:
