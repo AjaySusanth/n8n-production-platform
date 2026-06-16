@@ -62,6 +62,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "n8n.fullname" . }}-db-secrets
                   key: redis-password
+            - name: N8N_METRICS
+              value: "true"
+            - name: N8N_METRICS_INCLUDE_QUEUE_METRICS
+              value: "true"
+              
           ports:
             - name: http
               containerPort: 5678

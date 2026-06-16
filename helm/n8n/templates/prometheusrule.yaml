@@ -1,0 +1,46 @@
+{{-  if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+
+metadata:
+  name: {{ include "n8n.fullname" . }}-rules
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    release: n8n-prometheus
+
+spec:
+  groups:
+    - name: n8n.rules
+      rules:
+        - alert: N8nHighWorkflowFailureRate
+          expr: |
+            rate(n8n_scaling_mode_queue_jobs_failed[5m]) / (rate(n8n_scaling_mode_queue_jobs_completed[5m]) + rate(n8n_scaling_mode_queue_jobs_failed[5m])) > 0.10
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "n8n workflow failure rate above 10%"
+            description: "Workflow failure rate is above 10% (current: {{ $value | humanizePercentage }})"
+
+        - alert: N8nWorkerQueueBacklog
+          expr: |
+            n8n_scaling_mode_queue_jobs_waiting > 20
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "n8n worker queue backing up"
+            description: "There are currently {{ $value }} jobs waiting in the queue"
+        
+        - alert: N8nWorkerOOMKill
+          expr: |
+            kube_pod_container_status_last_terminated_reason{reason="OOMKilled", namespace="{{ .Release.Namespace }}"} == 1
+          for: 0s
+          labels:
+            severity: critical
+          annotations:
+            summary: "n8n pod OOMKilled"
+            description: "Pod {{ $labels.pod }} was OOMKilled in namespace {{ $labels.namespace }}"
+
+
+{{- end }}

@@ -1,0 +1,41 @@
+{{-  if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  name: {{ include "n8n.fullname" .}}-app-monitor
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    release: n8n-prometheus
+
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "n8n.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  name: {{ include "n8n.fullname" .}}-redis-monitor
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    release: n8n-prometheus
+
+spec:
+  selector:
+    matchLabels:
+      {{- include "n8n.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: redis
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+{{- end}}
