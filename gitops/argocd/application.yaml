@@ -17,5 +17,6 @@ spec:
     namespace: dev
 
   syncPolicy:
+    automated: {}
     syncOptions:
       - CreateNamespace=true # create dev namespace if not exist
