@@ -20,7 +20,7 @@ spec:
             severity: warning
           annotations:
             summary: "n8n workflow failure rate above 10%"
-            description: "Workflow failure rate is above 10% (current: {{ $value | humanizePercentage }})"
+            description: "Workflow failure rate is above 10% (current: {{ "{{" }} $value | humanizePercentage {{ "}}" }})"
 
         - alert: N8nWorkerQueueBacklog
           expr: |
@@ -30,7 +30,7 @@ spec:
             severity: critical
           annotations:
             summary: "n8n worker queue backing up"
-            description: "There are currently {{ $value }} jobs waiting in the queue"
+            description: "There are currently {{ "{{" }} $value {{ "}}" }} jobs waiting in the queue"
         
         - alert: N8nWorkerOOMKill
           expr: |
@@ -40,7 +40,7 @@ spec:
             severity: critical
           annotations:
             summary: "n8n pod OOMKilled"
-            description: "Pod {{ $labels.pod }} was OOMKilled in namespace {{ $labels.namespace }}"
+            description:  "Pod {{ "{{" }} $labels.pod {{ "}}" }} was OOMKilled in namespace {{ "{{" }} $labels.namespace {{ "}}" }}"
 
 
 {{- end }}
