@@ -9,6 +9,7 @@ tfplan
 # Local variables (may contain secrets)
 *.tfvars
 *.tfvars.json
+aks_kubeconfig
 
 # Developer overrides/logs
 *.log

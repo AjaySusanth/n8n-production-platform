@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n-keda
+  namespace: argocd
+spec:
+  project: n8n-project
+  source:
+    chart: keda
+    repoURL: https://kedacore.github.io/charts
+    targetRevision: "2.14.0"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: keda
+
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

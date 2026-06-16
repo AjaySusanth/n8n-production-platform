@@ -71,6 +71,16 @@ ingress:
   host: n8n.dev.local
   tlsSecret: n8n-tls
 
+keda:
+  enabled: true
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  cooldownPeriod: 300
+  redis:
+    listName: "bull:jobs:wait"
+    listLength: "5"
+
 keyvault:
   name: "n8n-dev-kv-ajay789"
   tenantId: "645aa23b-ae18-4952-afca-b3e8785fb106"
+  clientId: "f9714d75-32b3-419a-91ea-94ebbcf91830"

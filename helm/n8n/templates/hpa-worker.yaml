@@ -1,0 +1,38 @@
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ include "n8n.worker.fullname" . }}-redis-auth
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  secretTargetRef:
+    - parameter: password
+      name: {{ include "n8n.fullname" . }}-db-secrets
+      key: redis-password
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "n8n.worker.fullname" . }}
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "n8n.worker.fullname" . }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 10 }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
+  triggers:
+    - type: redis
+      metadata:
+        address: {{ include "n8n.fullname" . }}-redis:6379
+        listName: {{ .Values.keda.redis.listName | quote }}
+        listLength: {{ .Values.keda.redis.listLength | quote }}
+      authenticationRef:
+        name: {{ include "n8n.worker.fullname" . }}-redis-auth
+{{- end }}

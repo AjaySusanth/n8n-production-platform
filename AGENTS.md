@@ -101,7 +101,7 @@ Track progress here as each phase completes:
 
 - [x] Phase 1: Terraform — AKS + supporting infra
 - [x] Phase 2: Helm chart — write from scratch, deploy manually first
-- [ ] Phase 3: CI/CD — GitHub Actions + OIDC + ArgoCD
+- [x] Phase 3: CI/CD — GitHub Actions + OIDC + ArgoCD
 - [ ] Phase 4: Observability — Prometheus, Grafana, AlertManager, KEDA
 - [ ] Phase 5: Security — Key Vault CSI, NetworkPolicies, OPA Gatekeeper
 - [ ] Phase 6: README + architecture diagram + interview prep
