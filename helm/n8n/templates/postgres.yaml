@@ -76,6 +76,7 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata
             - name: secrets-store-inline
               mountPath: /mnt/secrets-store
               readOnly: true
