@@ -30,7 +30,7 @@ spec:
   triggers:
     - type: redis
       metadata:
-        address: {{ include "n8n.fullname" . }}-redis:6379
+        address: {{ include "n8n.fullname" . }}-redis.{{ .Release.Namespace }}.svc.cluster.local:6379
         listName: {{ .Values.keda.redis.listName | quote }}
         listLength: {{ .Values.keda.redis.listLength | quote }}
       authenticationRef:
