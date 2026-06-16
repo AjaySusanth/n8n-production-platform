@@ -35,6 +35,8 @@ spec:
           env:
             - name: EXECUTIONS_MODE
               value: "queue"
+            - name: QUEUE_HEALTH_CHECK_ACTIVE
+              value: "true"
             - name: N8N_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
