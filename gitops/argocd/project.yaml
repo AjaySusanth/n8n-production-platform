@@ -17,11 +17,14 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: kube-system
       server: https://kubernetes.default.svc
+    - namespace: gatekeeper-system
+      server: https://kubernetes.default.svc
 
   sourceRepos:
     - 'https://github.com/AjaySusanth/n8n-production-platform.git'
     - 'https://kedacore.github.io/charts'
     - 'https://prometheus-community.github.io/helm-charts'
+    - 'https://open-policy-agent.github.io/gatekeeper/charts'
   clusterResourceWhitelist: 
     - group: '*'
       kind: '*'

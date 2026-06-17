@@ -18,6 +18,8 @@ spec:
       serviceAccountName: {{ include "n8n.fullname" . }}-main
       securityContext:
         fsGroup: 1000
+        seccompProfile: # A seccomp (secure computing mode) profile filters the system calls (syscalls) a container can make to the Linux kernel.
+          type: RuntimeDefault #Even non-root users can make dangerous syscalls. Enforcing RuntimeDefault restricts the container to a safe, default set of syscalls predefined by the container runtime
       containers:
         - name: n8n
           image: "{{ .Values.n8n.image.repository }}:{{ .Values.n8n.image.tag }}"
@@ -27,6 +29,7 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -66,7 +69,7 @@ spec:
               value: "true"
             - name: N8N_METRICS_INCLUDE_QUEUE_METRICS
               value: "true"
-              
+
           ports:
             - name: http
               containerPort: 5678
@@ -88,6 +91,8 @@ spec:
             - name: secrets-store-inline
               mountPath: /mnt/secrets-store
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: secrets-store-inline
           csi:
@@ -95,3 +100,5 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: {{ include "n8n.fullname" . }}-secrets
+        - name: tmp
+          emptyDir: {}

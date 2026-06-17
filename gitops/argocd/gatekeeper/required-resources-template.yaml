@@ -1,0 +1,51 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredresources
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredResources # The kind of Constraint we will write next
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            resources: # Expects an array parameter, e.g., ["limits.cpu", "limits.memory"]
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredresources
+
+        # 1. Trigger a violation if a container does NOT have the required resource
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          required := input.parameters.resources[_]
+          not has_resource(container, required)
+          msg := sprintf("container <%v> does not have resource <%v> specified", [container.name, required])
+        }
+
+        # Helper: Extract all containers from the Pod spec (including initContainers)
+        input_containers[c] {
+          c := input.review.object.spec.containers[_]
+        }
+        input_containers[c] {
+          c := input.review.object.spec.initContainers[_]
+        }
+
+        # Helper rule functions: returns true if the field is defined in the container resources
+        has_resource(container, "requests.cpu") {
+          container.resources.requests.cpu
+        }
+        has_resource(container, "requests.memory") {
+          container.resources.requests.memory
+        }
+        has_resource(container, "limits.cpu") {
+          container.resources.limits.cpu
+        }
+        has_resource(container, "limits.memory") {
+          container.resources.limits.memory
+        }

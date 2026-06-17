@@ -1,0 +1,49 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowedtags # The unique name of our template
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowedTags # This defines the new "kind" of resource we can write
+      validation:
+        # This defines what parameters the Constraint can pass to this template
+        openAPIV3Schema:
+          type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      # The actual Rego policy logic
+      rego: |
+        package k8sdisallowedtags
+
+        # Rule 1: Trigger a violation if a container uses one of the disallowed tags
+        violation[{"msg": msg}] {
+            container := input_containers[_]
+            # Check if the container image ends with any of the tags in our parameters
+            tags := [tag_with_prefix | tag := input.parameters.tags[_]; tag_with_prefix := concat(":", ["", tag])]
+            strings.any_suffix_match(container.image, tags)
+            msg := sprintf("container <%v> uses a disallowed tag <%v>; disallowed tags are %v", [container.name, container.image, input.parameters.tags])
+        }
+
+        # Rule 2: Trigger a violation if a container does not specify a tag at all
+        # (Kubernetes defaults to "latest" if no tag is specified, which we also want to block!)
+        violation[{"msg": msg}] {
+            container := input_containers[_]
+            parts := split(container.image, "/")
+            not contains(parts[count(parts) - 1], ":")
+            msg := sprintf("container <%v> didn't specify an image tag <%v>", [container.name, container.image])
+        }
+
+        # Helper: Extract all containers from the Pod spec
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+        }

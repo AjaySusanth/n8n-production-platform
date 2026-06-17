@@ -20,6 +20,8 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+        seccompProfile: # A seccomp (secure computing mode) profile filters the system calls (syscalls) a container can make to the Linux kernel.
+          type: RuntimeDefault #Even non-root users can make dangerous syscalls. Enforcing RuntimeDefault restricts the container to a safe, default set of syscalls predefined by the container runtime
       containers:
         - name: redis
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"

@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowedTags # 1. Matches the kind defined in our template
+metadata:
+  name: block-latest-tag
+spec:
+  match: # 2. Where to enforce the rule
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"] # Validate all Pod configurations
+    namespaces:
+      - dev # Only apply this rule inside the "dev" namespace
+  parameters: # 3. Parameters declared in the template schema
+    tags:
+      - "latest" # The specific tag we want to disallow
