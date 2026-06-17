@@ -97,7 +97,7 @@ spec:
             - name: tmp
               mountPath: /tmp
             - name: n8n-home
-              mountPath: /home/node/.n8n
+              mountPath: /home/node
       volumes:
         - name: secrets-store-inline
           csi:
