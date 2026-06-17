@@ -93,6 +93,9 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+            - name: n8n-home
+              mountPath: /home/node/.n8n
+
       volumes:
         - name: secrets-store-inline
           csi:
@@ -101,4 +104,6 @@ spec:
             volumeAttributes:
               secretProviderClass: {{ include "n8n.fullname" . }}-secrets
         - name: tmp
+          emptyDir: {}
+        - name: n8n-home
           emptyDir: {}
