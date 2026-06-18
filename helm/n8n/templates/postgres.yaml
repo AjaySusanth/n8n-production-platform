@@ -19,6 +19,7 @@ spec:
         {{- include "n8n.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: postgres
     spec:
+      serviceAccountName: {{ include "n8n.fullname" . }}-postgres
       securityContext:
         fsGroup: 999
         seccompProfile: # A seccomp (secure computing mode) profile filters the system calls (syscalls) a container can make to the Linux kernel.
