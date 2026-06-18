@@ -11,8 +11,7 @@ spec:
     repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
     targetRevision: HEAD
     path: gitops/argocd
-    directory:
-      recurse: false   # Only top-level files — skips gatekeeper/ subdirectory
+    
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
