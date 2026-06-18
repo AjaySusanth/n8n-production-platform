@@ -2,6 +2,8 @@ apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sDisallowedTags # 1. Matches the kind defined in our template
 metadata:
   name: block-latest-tag
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   match: # 2. Where to enforce the rule
     kinds:
