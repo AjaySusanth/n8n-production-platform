@@ -7,7 +7,7 @@ spec:
   project: n8n-project
   source:
     repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
-    targetRevision: HEAD
+    targetRevision: fix/audit-fixes 
     path: helm/n8n
     helm:
       valueFiles:
@@ -17,6 +17,8 @@ spec:
     namespace: dev
 
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true # create dev namespace if not exist

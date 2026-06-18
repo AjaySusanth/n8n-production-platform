@@ -16,7 +16,9 @@ spec:
     namespace: gatekeeper-system
 
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
