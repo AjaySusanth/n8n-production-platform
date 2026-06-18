@@ -6,9 +6,9 @@ metadata:
 spec: 
   project: n8n-project
   source:
-    repoURL: n8ndevacrajay789.azurecr.io/helm
-    targetRevision: 1.0.0
-    chart: n8n
+    repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
+    targetRevision: main
+    path: helm/n8n
     helm:
       valueFiles:
         - values.yaml
