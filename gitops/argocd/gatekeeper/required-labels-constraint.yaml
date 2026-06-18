@@ -1,0 +1,15 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: require-mandatory-labels
+spec: 
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - dev
+  parameters: 
+    labels:
+      - "app.kubernetes.io/name"
+      - "app.kubernetes.io/instance"
