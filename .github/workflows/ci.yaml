@@ -69,3 +69,22 @@ jobs:
           echo "Packaging chart version: $NEW_VERSION"
           helm package ./helm/n8n --version "$NEW_VERSION" --destination .
           helm push "n8n-${NEW_VERSION}.tgz" oci://${{ env.ACR_NAME }}.azurecr.io/helm
+      
+      - name: Auto-promote Chart Version in ArgoCD
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: |
+          CHART_VERSION=$(grep '^version:' ./helm/n8n/Chart.yaml | awk '{print $2}')
+          GIT_SHA_SHORT=$(git rev-parse --short HEAD)
+          NEW_VERSION="${CHART_VERSION}-${GIT_SHA_SHORT}"
+          
+          # Replace the targetRevision in application.yaml with the exact packaged version
+          sed -i "s/targetRevision:.*/targetRevision: ${NEW_VERSION}/" gitops/argocd/application.yaml
+          
+          # Configure Git credentials for GitHub Actions bot
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Commit and push the updated application.yaml
+          git add gitops/argocd/application.yaml
+          git commit -m "chore(gitops): auto-promote n8n chart to version ${NEW_VERSION} [skip ci]" || echo "No changes to commit"
+          git push origin main
