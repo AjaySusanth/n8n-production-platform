@@ -83,7 +83,7 @@ keda:
 keyvault:
   name: "n8n-dev-kv-ajay789"
   tenantId: "823fc44f-0584-4327-8fc8-e26608640a83"
-  clientId: "f9714d75-32b3-419a-91ea-94ebbcf91830"
+  clientId: "a73f5abb-22e1-4faa-85a3-ecb8b8b223c2"
 
 monitoring:
   enabled: true
