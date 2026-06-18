@@ -70,6 +70,7 @@ ingress:
   className: addon-http-application-routing # default aks ingress class or nginx
   host: n8n.dev.local
   tlsSecret: n8n-tls
+  controllerNamespace: ingress-nginx
 
 keda:
   enabled: true

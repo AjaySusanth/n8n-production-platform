@@ -130,7 +130,9 @@ spec:
     - Ingress
   ingress:
     - from:
-        - namespaceSelector: {} # Allow ingress from Ingress Controllers in other namespaces
+        - namespaceSelector:
+            matchLabels: 
+              kubernetes.io/metadata.name: {{ .Values.ingress.controllerNamespace | quote }}
       ports:
         - port: 5678
           protocol: TCP
