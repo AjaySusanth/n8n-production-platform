@@ -5,10 +5,9 @@ metadata:
   name: {{ include "n8n.fullname" . }}
   labels:
     {{- include "n8n.labels" . | nindent 4 }}
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.className | quote }}
 
 spec:
+  ingressClassName: {{ .Values.ingress.className | quote }}
   {{- if .Values.ingress.tlsSecret }}
   tls:
     - hosts:
