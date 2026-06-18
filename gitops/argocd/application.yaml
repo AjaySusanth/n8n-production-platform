@@ -6,9 +6,9 @@ metadata:
 spec: 
   project: n8n-project
   source:
-    repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
-    targetRevision: HEAD
-    path: helm/n8n
+    repoURL: n8ndevacrajay789.azurecr.io/helm
+    targetRevision: 1.0.0
+    chart: n8n
     helm:
       valueFiles:
         - values.yaml
@@ -17,6 +17,8 @@ spec:
     namespace: dev
 
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true # create dev namespace if not exist

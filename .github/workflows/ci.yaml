@@ -34,7 +34,8 @@ jobs:
 
       - name: Helm Lint
         run: |
-          helm lint ./helm/n8n
+          helm lint ./helm/n8n --strict --values ./helm/n8n/values.yaml
+
       
       - name: Azure OIDC Login
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -48,10 +49,23 @@ jobs:
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Helm Registry Login
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: |
+          USER_NAME="00000000-0000-0000-0000-000000000000"
+          PASSWORD=$(az acr login --name ${{ env.ACR_NAME }} \
+            --expose-token --output tsv --query accessToken)
+          echo "::add-mask::$PASSWORD"    # masks it in all subsequent logs
+          echo "$PASSWORD" | helm registry login ${{ env.ACR_NAME }}.azurecr.io \
+            --username "$USER_NAME" --password-stdin
       
       - name: Package and Push Helm Chart
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
-          helm package ./helm/n8n --destination .
-          CHART_PACKAGE=$(ls n8n-*.tgz)
-          helm push "$CHART_PACKAGE" oci://${{ env.ACR_NAME }}.azurecr.io/helm
+          CHART_VERSION=$(grep '^version:' ./helm/n8n/Chart.yaml | awk '{print $2}')
+          GIT_SHA_SHORT=$(git rev-parse --short HEAD)
+          NEW_VERSION="${CHART_VERSION}-${GIT_SHA_SHORT}"
+          echo "Packaging chart version: $NEW_VERSION"
+          helm package ./helm/n8n --version "$NEW_VERSION" --destination .
+          helm push "n8n-${NEW_VERSION}.tgz" oci://${{ env.ACR_NAME }}.azurecr.io/helm

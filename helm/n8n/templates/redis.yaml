@@ -18,6 +18,7 @@ spec:
         {{- include "n8n.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: redis
     spec:
+      serviceAccountName: {{ include "n8n.fullname" . }}-redis
       securityContext:
         fsGroup: 1000
         seccompProfile: # A seccomp (secure computing mode) profile filters the system calls (syscalls) a container can make to the Linux kernel.

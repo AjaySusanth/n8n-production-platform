@@ -1,23 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: n8n-keda
+  name: n8n-gatekeeper-constraints
   namespace: argocd
 spec:
   project: n8n-project
   source:
-    chart: keda
-    repoURL: https://kedacore.github.io/charts
-    targetRevision: "2.14.0"
-
+    repoURL: https://github.com/AjaySusanth/n8n-production-platform.git
+    targetRevision: fix/audit-fixes
+    path: gitops/argocd/gatekeeper/constraints
   destination:
     server: https://kubernetes.default.svc
-    namespace: keda
-
+    namespace: gatekeeper-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
