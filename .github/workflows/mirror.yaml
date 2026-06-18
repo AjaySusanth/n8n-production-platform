@@ -1,0 +1,47 @@
+name: Image Mirroring
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ACR_NAME: "n8ndevacrajay789"
+  N8N_VERSION: "1.94.1"
+  POSTGRES_VERSION: "16.3"
+  REDIS_VERSION: "7.2.5"
+
+jobs:
+  mirror:
+    name: Mirror images to ACR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Azure OIDC Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: ACR Login
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Mirror n8n
+        run: |
+          docker pull n8nio/n8n:${{ env.N8N_VERSION }}
+          docker tag n8nio/n8n:${{ env.N8N_VERSION }} ${{ env.ACR_NAME }}.azurecr.io/n8nio/n8n:${{ env.N8N_VERSION }}
+          docker push ${{ env.ACR_NAME }}.azurecr.io/n8nio/n8n:${{ env.N8N_VERSION }}
+
+      - name: Mirror postgres
+        run: |
+          docker pull postgres:${{ env.POSTGRES_VERSION }}
+          docker tag postgres:${{ env.POSTGRES_VERSION }} ${{ env.ACR_NAME }}.azurecr.io/postgres:${{ env.POSTGRES_VERSION }}
+          docker push ${{ env.ACR_NAME }}.azurecr.io/postgres:${{ env.POSTGRES_VERSION }}
+
+      - name: Mirror redis
+        run: |
+          docker pull redis:${{ env.REDIS_VERSION }}
+          docker tag redis:${{ env.REDIS_VERSION }} ${{ env.ACR_NAME }}.azurecr.io/redis:${{ env.REDIS_VERSION }}
+          docker push ${{ env.ACR_NAME }}.azurecr.io/redis:${{ env.REDIS_VERSION }}

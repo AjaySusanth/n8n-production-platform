@@ -3,7 +3,7 @@ global:
 
 n8n:
   image:
-    repository: n8nio/n8n
+    repository: n8ndevacrajay789.azurecr.io/n8nio/n8n
     tag: "1.94.1"
     pullPolicy: IfNotPresent
 
@@ -39,7 +39,7 @@ n8n:
   
 postgres:
   image:
-    repository: postgres
+    repository: n8ndevacrajay789.azurecr.io/postgres
     tag: "16.3"
     pullPolicy: IfNotPresent
   storage: 5Gi
@@ -53,7 +53,7 @@ postgres:
 
 redis:
   image:
-    repository: redis
+    repository: n8ndevacrajay789.azurecr.io/redis
     tag: "7.2.5"
     pullPolicy: IfNotPresent
   storage: 2Gi
