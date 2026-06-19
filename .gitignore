@@ -24,3 +24,8 @@ charts/
 .vscode/
 .idea/
 Thumbs.db
+# AI agent config (tooling-specific, not part of the infrastructure)
+.agents/
+
+# Personal learning phase logs
+docs/phase-logs/

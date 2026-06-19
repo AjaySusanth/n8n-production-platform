@@ -104,5 +104,5 @@ Track progress here as each phase completes:
 - [x] Phase 3: CI/CD — GitHub Actions + OIDC + ArgoCD
 - [x] Phase 4: Observability — Prometheus, Grafana, AlertManager, KEDA
 - [x] Phase 5: Security — Key Vault CSI, NetworkPolicies, OPA Gatekeeper
-- [ ] Phase 6: README + architecture diagram + interview prep
+- [x] Phase 6: README + architecture diagram + interview prep
 
