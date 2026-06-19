@@ -156,3 +156,32 @@ spec:
       ports:
         - port: 80
           protocol: TCP
+
+---
+# 7. Allow Prometheus Ingress to scrape metrics from n8n components
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "n8n.fullname" .}}-allow-prometheus-ingress
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values: [main,webhook,worker]
+  policyTypes:
+    - Ingress
+
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - port: 5678
+          protocol: TCP
+
+          
