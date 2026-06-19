@@ -8,7 +8,7 @@ spec:
   source:
     chart: n8n
     repoURL: n8ndevacrajay789.azurecr.io/helm
-    targetRevision: 1.0.0-618ba42
+    targetRevision: 1.0.0-bba726a
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
