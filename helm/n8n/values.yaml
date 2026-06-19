@@ -22,10 +22,10 @@ n8n:
     resources:
       requests:
         cpu: 150m
-        memory: 256Mi
+        memory: 10Mi
       limits:
         cpu: 400m
-        memory: 512Mi
+        memory: 15Mi
 
   webhook:
     replicaCount: 1
