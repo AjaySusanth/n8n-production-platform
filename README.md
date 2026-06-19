@@ -246,3 +246,39 @@ These rules are enforced across every file in this repository:
 5. **No pod uses the `default` ServiceAccount.**
 6. **NetworkPolicies: default-deny namespace, then explicit whitelist.**
 7. **All cluster changes go through Git → ArgoCD.** No manual `kubectl apply` to prod.
+
+---
+
+## Verification & Design Decisions
+
+This project was validated end-to-end using a formal verification checklist and documented architectural decision records (ADRs).
+
+### Verification Evidence
+A complete verification ledger with validation steps and command outputs is available here:
+
+- [Verification Evidence Ledger](docs/verification_ledger.md)
+
+The ledger covers:
+- Workload security compliance (ServiceAccounts and resource limits)
+- Container security contexts (non-root execution, privilege escalation blocks)
+- Key Vault least-privilege access verification
+- Secrets isolation and CSI runtime projection
+- KEDA ScaledObject status and live autoscaling tests
+- NetworkPolicy enforcement tests (e.g., worker → main blocking)
+- GitHub Actions CI/CD pipelines & ArgoCD GitOps sync reconciliation
+- Prometheus & Grafana dashboard validation
+- AlertManager OOMKill alerting end-to-end
+- OPA Gatekeeper policy admission checks
+
+### Architecture Decision Records (ADRs)
+
+Major design decisions and tradeoffs are documented in:
+
+- [Architectural Decision Records](docs/decisions.md)
+
+Decisions documented:
+- **ADR-001**: Queue Mode Architecture vs. Single-Process Deployment
+- **ADR-002**: Custom Helm Chart vs. Community Chart
+- **ADR-003**: ArgoCD OCI Source vs. Git Path Source
+- **ADR-004**: KEDA Redis Trigger vs. Standard HPA
+- **ADR-005**: Azure Key Vault CSI Driver vs. Kubernetes Secrets
