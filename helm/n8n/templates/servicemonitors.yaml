@@ -13,6 +13,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "n8n.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: main
   endpoints:
     - port: http
       path: /metrics
