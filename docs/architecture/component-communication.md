@@ -1,6 +1,6 @@
-# n8n Production Platform — NetworkPolicy Communication Matrix
+# Scalable n8n Architecture — NetworkPolicy Communication Matrix
 
-This document defines the network communication matrix for the n8n production platform on AKS, derived from the NetworkPolicies defined in `helm/n8n/templates/networkpolicies.yaml`.
+This document defines the network communication matrix for the scalable n8n architecture on AKS, derived from the NetworkPolicies defined in `helm/n8n/templates/networkpolicies.yaml`.
 
 ## Communication Matrix
 

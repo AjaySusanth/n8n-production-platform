@@ -1,4 +1,4 @@
-# n8n Production Platform on AKS — Project Context
+# Scalable n8n Architecture on AKS — Project Context
 
 ## What This Project Is
 

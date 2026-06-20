@@ -1,6 +1,6 @@
 # Architectural Decision Records
 
-This document records the key engineering decisions made during the design and deployment of the n8n production platform on AKS. Each record follows the same structure: the context that forced a decision, the options considered, the choice made, and — critically — what was accepted as a tradeoff.
+This document records the key engineering decisions made during the design and deployment of the scalable n8n architecture on AKS. Each record follows the same structure: the context that forced a decision, the options considered, the choice made, and — critically — what was accepted as a tradeoff.
 
 ---
 

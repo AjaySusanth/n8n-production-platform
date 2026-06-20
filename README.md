@@ -1,4 +1,4 @@
-# n8n Production Platform on AKS
+# Scalable n8n Architecture on AKS
 
 A production-grade, self-hosted [n8n](https://n8n.io) deployment on Azure Kubernetes Service, built from scratch as a DevOps portfolio project. This is a **pure infrastructure repository** — zero application code. Everything here is Terraform, Helm, GitOps, and platform operations.
 
@@ -8,7 +8,7 @@ A production-grade, self-hosted [n8n](https://n8n.io) deployment on Azure Kubern
 
 ## Architecture
 
-![n8n Production Platform Core Topology](docs/architecture/architecture-diagram.png)
+![Scalable n8n Architecture Core Topology](docs/architecture/architecture-diagram.png)
 
 | Component | Role | Scales on |
 |---|---|---|

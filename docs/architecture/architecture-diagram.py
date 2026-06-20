@@ -109,7 +109,7 @@ CLUSTER_LEGEND = {  # legend box
 
 # ── Diagram ───────────────────────────────────────────────────────────────────
 with Diagram(
-    name="n8n Production Platform — Core Topology",
+    name="Scalable n8n Architecture — Core Topology",
     show=False,
     direction="LR",
     graph_attr=graph_attr,
